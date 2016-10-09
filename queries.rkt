@@ -15,16 +15,16 @@
 	rows)
 
 (define (get-games)
-	(get-rows "SELECT * FROM Game;"))
+	(get-rows "SELECT RowId, * FROM Game;"))
 
 (define (get-platforms)
-	(get-rows "SELECT * FROM Platform;"))
+	(get-rows "SELECT RowId, * FROM Platform;"))
 
 (define (get-genres)
-	(get-rows "SELECT * From Genre;"))
+	(get-rows "SELECT RowId, * From Genre;"))
 
 (define (get-hardware-types)
-	(get-rows "SELECT * FROM HardwareType;"))
+	(get-rows "SELECT RowId, * FROM HardwareType;"))
 
 (define (get-hardware)
-	(get-rows "SELECT * FROM Hardware;"))
+	(get-rows "SELECT RowId, * FROM Hardware;"))

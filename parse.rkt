@@ -19,7 +19,8 @@
 (define (parse-code-description result-set)
 	(code-description 
 		(vr result-set 0)
-		(vr result-set 1)))
+		(vr result-set 1)
+		(vr result-set 2)))
 
 (define (parse-game result-set)
 	(game 
@@ -31,7 +32,8 @@
 		(vr result-set 5)
 		(vr result-set 6)
 		(vr result-set 7)
-		(vr result-set 8)))
+		(vr result-set 8)
+		(vr result-set 9)))
 
 (define (parse-games results)
 	(map parse-game results))
@@ -61,7 +63,8 @@
 		(vr result-set 2)
 		(vr result-set 3)
 		(vr result-set 4)
-		(vr result-set 5)))
+		(vr result-set 5
+		(vr result-set 6))))
 
 (define (parse-hardwares result-set)
 	(map parse-hardware result-set))

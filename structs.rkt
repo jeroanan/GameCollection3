@@ -3,6 +3,7 @@
 (provide (all-defined-out))
 
 (struct game (
+	row-id
 	title
 	genre
 	platform
@@ -14,10 +15,12 @@
 	notes))
 
 (struct code-description (
+	row-id
 	code
 	description))
 
 (struct hardware (
+	row-id
 	name
 	hardware-type
 	platform
