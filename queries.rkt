@@ -15,7 +15,7 @@
 	rows)
 
 (define (get-games)
-	(get-rows "SELECT RowId, * FROM Game;"))
+	(get-rows "SELECT RowId, * FROM Game ORDER BY title;"))
 
 (define (get-platforms)
 	(get-rows "SELECT RowId, * FROM Platform;"))
