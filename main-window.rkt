@@ -10,38 +10,50 @@
 (define window-height 300)
 (define window-width 1000)
 
-(define frame (new frame%
-		   [label "Game Collection"]
-		   [height window-height]
-		   [width window-width]))
+(define (launch-gui)
+	(define frame (new frame%
+			   [label "Game Collection"]
+			   [height window-height]
+			   [width window-width]))
 		  
-(define games (parse-games (get-games)))
-(define platforms (parse-platforms (get-platforms)))
+	(define games (parse-games (get-games)))
+	(define platforms (parse-platforms (get-platforms)))
 
-(define (from-game field-func)
-  (map (lambda (x) (field-func x)) games))
+	(define (from-game field-func)
+	  (map (lambda (x) (field-func x)) games))
 
-(define games-list (new-list-box 
-		     frame 
-		     window-width 
-		     (from-game game-title)
-		     (lambda () #f)))
+	(define (list-box-click)
+	  (display "moo")
+	  (newline))
 
-(send games-list set-column-label 0 "Title")
-(send games-list set-column-width 0 300 0 1000000)
+	(define (list-box-col-heading-click col-index)
+	  (display col-index)
+	  (newline))
 
-(define (add-games-column label contents)
-  (add-list-column games-list label 300 contents))
+	(define games-list (new-list-box 
+			     frame 
+			     window-width 
+			     [from-game game-title]
+			     list-box-click
+			     list-box-col-heading-click))
 
-(define game-platforms
-  (map (lambda (x)
-	 (code-description-description 
-	   (first (filter 
-		    (lambda (y) 
-		      (eq? (string->number (game-platform x)) 
-			   (code-description-row-id y))) 
-		    platforms)))) 
-       games))
+	(send games-list set-column-label 0 "Title")
+	(send games-list set-column-width 0 300 0 1000000)
 
-(add-games-column "Platform" game-platforms)
-(send frame show #t)
+	(define (add-games-column label contents)
+	  (add-list-column games-list label 300 contents))
+
+	(define game-platforms
+	  (map (lambda (x)
+		 (code-description-description 
+		   (first (filter 
+			    (lambda (y) 
+			      (eq? (string->number (game-platform x)) 
+				   (code-description-row-id y))) 
+			    platforms)))) 
+	       games))
+
+	(add-games-column "Platform" game-platforms)
+	(send frame show #t))
+
+(launch-gui)

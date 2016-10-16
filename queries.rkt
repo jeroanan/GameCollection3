@@ -14,8 +14,8 @@
 	(disconnect dbconn)
 	rows)
 
-(define (get-games)
-	(get-rows "SELECT RowId, * FROM Game ORDER BY title;"))
+(define (get-games [sort-by "title"] [sort-dir "ASC"])
+	(get-rows (string-append "SELECT RowId, * FROM Game ORDER BY " sort-by " " sort-dir ";")))
 
 (define (get-platforms)
 	(get-rows "SELECT RowId, * FROM Platform;"))

@@ -40,12 +40,17 @@
 
 (define (empty-callback tp e) (void))
 
-(define (make-listbox-callback callback-func)
-  (lambda (sender control-event)
-    (define event-type (send control-event get-event-type))
-    (when (eq? event-type 'list-box) (callback-func))))
+(define (make-listbox-callback [click-callback null] [col-heading-callback null])
 
-(define (new-list-box parent min-width choices [callback null])
+  (lambda (sender control-event)
+    (define sent-event-type (send control-event get-event-type))
+
+    (cond
+      [(and (eq? sent-event-type 'list-box) (not (null? click-callback))) (click-callback)] 
+      [(and (eq? sent-event-type 'list-box-column) (not (null? col-heading-callback))) 
+      	(col-heading-callback (send control-event get-column))])))
+
+(define (new-list-box parent min-width choices [click-callback null] [col-heading-callback null])
   (new list-box%
        [parent parent]
        [choices choices]
@@ -57,7 +62,9 @@
        [stretchable-width #t]
        [stretchable-height #t]
        [label #f]
-       [callback (if (null? callback) empty-callback (make-listbox-callback callback))]))
+       [callback (if (null? click-callback) empty-callback (make-listbox-callback 
+							     click-callback 
+							     col-heading-callback))]))
 
 (define (set-listbox-data list-box data)  
   (define (add-data data counter)
