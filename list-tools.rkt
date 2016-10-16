@@ -22,7 +22,8 @@
 (provide add-list-column
          new-list-box
          set-listbox-data
-         get-listbox-selected-data)
+         get-listbox-selected-data
+	 set-list-column-items)
 
 (define (set-list-column-items list-ctrl column-no list-items [n 0])
   ;; For the given list control and column number, set the contents.
@@ -31,12 +32,12 @@
     (set-list-column-items list-ctrl column-no (rest list-items) (+ n 1)))  
   (if (empty? list-items) #t (do-add)))
 
-(define (add-list-column list-ctrl label width contents)
+(define (add-list-column list-ctrl label width [contents null])
   ;; Append a new column to a list box with the given label, width and contents
   (define number-of-columns (length (send list-ctrl get-column-labels)))
   (send list-ctrl append-column label)
   (send list-ctrl set-column-width number-of-columns width 0 1000000)
-  (set-list-column-items list-ctrl number-of-columns contents))
+  (unless (null? contents) (set-list-column-items list-ctrl number-of-columns contents)))
 
 (define (empty-callback tp e) (void))
 

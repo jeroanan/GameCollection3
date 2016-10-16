@@ -15,7 +15,12 @@
 	rows)
 
 (define (get-games [sort-by "title"] [sort-dir "ASC"])
-	(get-rows (string-append "SELECT RowId, * FROM Game ORDER BY " sort-by " " sort-dir ";")))
+	(get-rows (string-append "SELECT g.RowId, g.Title, g.Genre, g.Platform, g.NumberOwned, " 
+				 "g.NumberOfManuals, g.DatePurchased, g.ApproximatePurchaseDate, " 
+				 "g.Notes, p.Name as PlatformName " 
+				 "FROM Game as g "
+				 "JOIN Platform AS p ON g.Platform=p.RowId "
+				 "ORDER BY " sort-by " " sort-dir ";")))
 
 (define (get-platforms)
 	(get-rows "SELECT RowId, * FROM Platform;"))
