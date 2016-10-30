@@ -1,4 +1,3 @@
-
 #lang racket
 
 ;; Copyright (c) 2016 David Wilson (Jeroanan)
@@ -41,17 +40,26 @@
 
 (define (empty-callback tp e) (void))
 
-(define (make-listbox-callback [click-callback null] [col-heading-callback null])
+(define (make-listbox-callback [click-callback null] 
+			       [col-heading-callback null]
+			       [double-click-callback null])
 
   (lambda (sender control-event)
     (define sent-event-type (send control-event get-event-type))
 
-    (cond
-      [(and (eq? sent-event-type 'list-box) (not (null? click-callback))) (click-callback)] 
-      [(and (eq? sent-event-type 'list-box-column) (not (null? col-heading-callback))) 
-      	(col-heading-callback (send control-event get-column))])))
+    (define (call-event? event-type callback)
+      (and (eq? sent-event-type event-type) (not (null? callback))))
 
-(define (new-list-box parent min-width choices [click-callback null] [col-heading-callback null])
+    (cond
+      [(call-event? 'list-box click-callback) (click-callback)]
+      [(call-event? 'list-box-column col-heading-callback) 
+      	(col-heading-callback (send control-event get-column))]
+      [(call-event? 'list-box-dclick double-click-callback) (double-click-callback)])))
+
+(define (new-list-box parent min-width choices 
+		      [click-callback null] 
+		      [col-heading-callback null]
+		      [double-click-callback null])
   (new list-box%
        [parent parent]
        [choices choices]
@@ -63,9 +71,9 @@
        [stretchable-width #t]
        [stretchable-height #t]
        [label #f]
-       [callback (if (null? click-callback) empty-callback (make-listbox-callback 
-							     click-callback 
-							     col-heading-callback))]))
+       [callback (if (and (null? click-callback) (null? col-heading-callback) (null? double-click-callback)) 
+		      empty-callback 
+		      (make-listbox-callback click-callback col-heading-callback double-click-callback))]))
 
 (define (set-listbox-data list-box data)  
   (define (add-data data counter)

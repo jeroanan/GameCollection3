@@ -15,7 +15,39 @@
 			   [label "Game Collection"]
 			   [height window-height]
 			   [width window-width]))
+
+	(define menu-bar (new menu-bar%
+			      [parent frame]))
+
+	(define (menu-do-nothing menu-item control-event)
+	  #f)
+
+	(define (menu-item-maker parent)
+	  (lambda (label [callback null])
+	    (define the-callback (if (null? callback) menu-do-nothing callback))
+	    (new menu-item%
+		 [parent parent]
+		 [label label]
+		 [callback the-callback])))
+
+	(define game-menu (new menu%
+			       [parent menu-bar]
+			       [label "&Game"]))
+
+	(define game-menu-item-maker (menu-item-maker game-menu))
+
+	(define game-details-menu-item (game-menu-item-maker "&Details"))
+	(define quit-menu-item (game-menu-item-maker "&Quit" (lambda (x y) (exit)))) 
+
+	(define collection-menu (new menu%
+				     [parent menu-bar]
+				     [label "&Collection"]))
 		  
+	(define collection-menu-item-maker (menu-item-maker collection-menu))
+
+	(define platforms-menu-item (collection-menu-item-maker "&Platforms"))
+	(define genres-menu-item (collection-menu-item-maker "&Genres"))
+
 	(define games (parse-games (get-games)))
 	(define platforms (parse-platforms (get-platforms)))
 
@@ -26,9 +58,11 @@
 	  (map (lambda (x) (field-func x)) games))
 
 	(define (list-box-click)
-	  (display "moo")
-	  (newline))
+	  #f)
 
+	(define (list-box-dclick)
+	  #f)
+	
 	(define (list-box-col-heading-click col-index)
 	  (define new-sort-col
 	    (cond
@@ -51,7 +85,8 @@
 			     window-width 
 			     [from-game game-title]
 			     list-box-click
-			     list-box-col-heading-click))
+			     list-box-col-heading-click
+			     list-box-dclick))
 
 	(define (populate-games-list)
 	  (set! games (parse-games (get-games sort-col sort-dir)))
@@ -68,7 +103,6 @@
 	  
 	  (set-list-column-items games-list 0 (from-game game-title))
 	  (set-list-column-items games-list 1 game-platforms))
-	
 
 	(send games-list set-column-label 0 "Title")
 	(send games-list set-column-width 0 300 0 1000000)

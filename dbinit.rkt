@@ -58,7 +58,6 @@
 	(list "HardwareType" create-hardware-type-table)
 	(list "Hardware" create-hardware-table)))
 
-
 (define (init-db)
 	(for ([i table-creates])
 	(unless (table-exists? dbconn (first i))
