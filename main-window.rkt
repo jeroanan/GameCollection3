@@ -5,7 +5,8 @@
 (require "queries.rkt"
 	 "parse.rkt"
 	 "structs.rkt"
-	 "list-tools.rkt")
+	 "list-tools.rkt"
+	 "game-details-dialog.rkt")
 
 (define window-height 300)
 (define window-width 1000)
@@ -36,6 +37,7 @@
 
 	(define game-menu-item-maker (menu-item-maker game-menu))
 
+	(define new-game-menu-item (game-menu-item-maker "&New"))
 	(define game-details-menu-item (game-menu-item-maker "&Details"))
 	(define quit-menu-item (game-menu-item-maker "&Quit" (lambda (x y) (exit)))) 
 
@@ -61,7 +63,9 @@
 	  #f)
 
 	(define (list-box-dclick)
-	  #f)
+	  (define selection (first (send games-list get-selections)))
+	  (define selected-game (send games-list get-data selection))
+	  (show-game-details-dialog frame selected-game))
 	
 	(define (list-box-col-heading-click col-index)
 	  (define new-sort-col
@@ -102,7 +106,8 @@
 		 games))
 	  
 	  (set-list-column-items games-list 0 (from-game game-title))
-	  (set-list-column-items games-list 1 game-platforms))
+	  (set-list-column-items games-list 1 game-platforms)
+	  (set-listbox-data games-list games))
 
 	(send games-list set-column-label 0 "Title")
 	(send games-list set-column-width 0 300 0 1000000)
