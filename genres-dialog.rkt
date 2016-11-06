@@ -20,17 +20,31 @@
 		      [height window-height]
 		      [width window-width]))
 
-  (define genres (parse-genres (get-genres)))
+  (define genres null)
   (define (from-genres accessor) (map (lambda (x) (accessor x)) genres))
-  (define genre-names (from-genres code-description-code))
-  (define genre-ids (from-genres code-description-row-id))
+  (define genre-names (list))
+  (define genre-ids (list)) 
   
+  (define (populate-genre-list) 
+    (set! genres (parse-genres (get-genres))) 
+    (set! genre-names (from-genres code-description-code)) 
+    (set! genre-ids (from-genres code-description-row-id))
+
+    (send genre-list clear) 
+
+    (define (set-col idx data) (set-list-column-items genre-list idx data))
+    (for ([_ genre-names]) (send genre-list append ""))
+    (set-col 0 genre-names))
+
+ 
   (define genre-list (new-list-box dialog
 				      window-width
 				      #:min-height 450
 				      genre-names))
   
   (send genre-list set-column-label 0 "Genre Name")
+
+  (populate-genre-list)
 
   (define hpanel (new horizontal-panel%
 		      [parent dialog]

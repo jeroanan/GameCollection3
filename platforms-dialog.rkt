@@ -44,7 +44,6 @@
 				      platform-names))
   
   (send platform-list set-column-label 0 "Platform Name") 
-  (send platform-list set-column-width 0 300 0 1000000)
 
   (populate-platform-list)
 
