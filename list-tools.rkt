@@ -59,7 +59,8 @@
 (define (new-list-box parent min-width choices 
 		      [click-callback null] 
 		      [col-heading-callback null]
-		      [double-click-callback null])
+		      [double-click-callback null]
+		      #:min-height [min-height null])
   (new list-box%
        [parent parent]
        [choices choices]
@@ -68,6 +69,7 @@
                     'column-headers
                     'clickable-headers)]
        [min-width min-width]
+       [min-height (if (null? min-height) (send parent get-height) min-height)]
        [stretchable-width #t]
        [stretchable-height #t]
        [label #f]

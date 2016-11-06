@@ -37,13 +37,13 @@
   ;;
   ;; label: The label that the button should have
   ;; on-click: A function with no arguments that will be executed when the
-  ;; button is clicked.
-  (lambda (label on-click)
+  ;; button is clicked. Defaults to null -- in which case nothing happens.
+  (lambda (label [on-click null])
     (define new-button (new button%
                             [parent parent]
                             [label label]
                             [callback
-                             (make-button-click-callback on-click)]))
+                             (make-button-click-callback (if (null? on-click) (lambda () #f) on-click))]))
     (unless (null? min-width) (send new-button min-width min-width))
     new-button))
       
