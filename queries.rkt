@@ -35,14 +35,14 @@
 				 "JOIN Platform AS p ON g.Platform=p.RowId "
 				 "ORDER BY " sort-by " " sort-dir ";")))
 
-(define (get-platforms)
-	(get-rows "SELECT RowId, * FROM Platform;"))
+(define (get-platforms [sort-dir "ASC"])
+	(get-rows (string-append "SELECT RowId, * FROM Platform ORDER BY Name " sort-dir ";")))
 
 (define (get-platform-by-id id)
   (get-row-by-id "SELECT RowId, * FROM Platform WHERE RowId=$1" id))
 
-(define (get-genres)
-	(get-rows "SELECT RowId, * From Genre;"))
+(define (get-genres [sort-dir "ASC"])
+	(get-rows (string-append "SELECT RowId, * From Genre ORDER BY Name " sort-dir ";")))
  
 (define (get-genre-by-id id)
   (get-row-by-id "SELECT RowId, * FROM Genre WHERE RowId=$1" id))
