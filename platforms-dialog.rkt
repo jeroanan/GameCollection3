@@ -20,17 +20,33 @@
 		      [height window-height]
 		      [width window-width]))
 
-  (define platforms (parse-platforms (get-platforms)))
+  (define platforms null) 
   (define (from-platforms accessor) (map (lambda (x) (accessor x)) platforms))
-  (define platform-names (from-platforms code-description-code))
-  (define platform-ids (from-platforms code-description-row-id))
+  (define platform-names (list)) 
+  (define platform-descriptions (list)) 
+  (define platform-ids (list))
   
+  (define (populate-platform-list) 
+    (set! platforms (parse-platforms (get-platforms))) 
+    (set! platform-names (from-platforms code-description-code)) 
+    (set! platform-descriptions (from-platforms code-description-description)) 
+    (set! platform-ids (from-platforms code-description-row-id))
+
+    (send platform-list clear) 
+
+    (define (set-col idx data) (set-list-column-items platform-list idx data))
+    (for ([_ platform-names]) (send platform-list append ""))
+    (set-col 0 platform-names))
+
   (define platform-list (new-list-box dialog
 				      window-width
 				      #:min-height 450
 				      platform-names))
   
-  (send platform-list set-column-label 0 "Platform Name")
+  (send platform-list set-column-label 0 "Platform Name") 
+  (send platform-list set-column-width 0 300 0 1000000)
+
+  (populate-platform-list)
 
   (define hpanel (new horizontal-panel%
 		      [parent dialog]
