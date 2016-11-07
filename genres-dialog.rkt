@@ -25,8 +25,10 @@
   (define genre-names (list))
   (define genre-ids (list)) 
   
+  (define sort-direction "ASC")
+
   (define (populate-genre-list) 
-    (set! genres (parse-genres (get-genres))) 
+    (set! genres (parse-genres (get-genres sort-direction))) 
     (set! genre-names (from-genres code-description-code)) 
     (set! genre-ids (from-genres code-description-row-id))
 
@@ -36,10 +38,15 @@
     (for ([_ genre-names]) (send genre-list append ""))
     (set-col 0 genre-names))
  
+  (define (col-heading-click col-index)
+    (set! sort-direction (if (eq? sort-direction "ASC") "DESC" "ASC"))
+    (populate-genre-list))
+
   (define genre-list (new-list-box dialog
 				      window-width
 				      #:min-height 450
-				      genre-names))
+				      genre-names
+				      #:col-heading-callback col-heading-click))
   
   (send genre-list set-column-label 0 "Genre Name")
 
