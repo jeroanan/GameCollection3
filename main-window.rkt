@@ -68,7 +68,7 @@
 	(define (list-box-dclick)
 	  (define selection (first (send games-list get-selections)))
 	  (define selected-game (send games-list get-data selection))
-	  (show-game-details-dialog frame selected-game))
+	  (show-game-details-dialog frame selected-game #:ok-button-callback populate-games-list))
 	
 	(define (list-box-col-heading-click col-index)
 	  (define new-sort-col

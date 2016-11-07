@@ -13,9 +13,13 @@
 (define window-height 150)
 (define window-width 500)
 
-(define (show-game-details-dialog parent game)
+(define (show-game-details-dialog parent 
+				  the-game
+				  #:ok-button-callback [ok-button-callback null]
+				  #:cancel-button-callback [cancel-button-callback null])
+
   (define dialog (new dialog%
-		      [label (game-title game)]
+		      [label (game-title the-game)]
 		      [parent parent]
 		      [height window-height]
 		      [width window-width]))
@@ -33,11 +37,11 @@
   (define genre-codes (get-codes (parse-genres (get-genres))))
   (define platform-codes (get-codes (parse-platforms (get-platforms)))) 
 
-  (define the-platform (parse-platform (get-platform-by-id (game-platform game))))
-  (define the-genre (parse-genre (get-genre-by-id (game-genre game))))
+  (define the-platform (parse-platform (get-platform-by-id (game-platform the-game))))
+  (define the-genre (parse-genre (get-genre-by-id (game-genre the-game))))
 
-  (define game-id (new-text-field "Id" (number->string (game-row-id game)) #f))
-  (define title (new-text-field "Title" (game-title game)))
+  (define game-id (new-text-field "Id" (number->string (game-row-id the-game)) #f))
+  (define title (new-text-field "Title" (game-title the-game)))
 
   (define genres (new-choice dialog "Genre" genre-codes))
   (set-choice-selection genres (code-description-code the-genre))
@@ -49,9 +53,9 @@
     (new-text-field label 
 		    (if (number? text) (number->string text) "0")))
 
-  (define number-owned (number-field "Number Owned" (game-number-owned game)))
-  (define number-boxed (number-field "Number Boxed" (game-number-boxed game)))
-  (define number-manuals (number-field "Number of Manuals" (game-number-of-manuals game)))
+  (define number-owned (number-field "Number Owned" (game-number-owned the-game)))
+  (define number-boxed (number-field "Number Boxed" (game-number-boxed the-game)))
+  (define number-manuals (number-field "Number of Manuals" (game-number-of-manuals the-game)))
 
   (define hpanel (new horizontal-panel%
 		      [parent dialog]
@@ -59,7 +63,34 @@
 
   (define button-maker (get-simple-button-maker hpanel))
 
-  (define cancel-button (button-maker "&Cancel" (lambda () (send dialog show #f))))
-  (define ok-button (button-maker "&OK" (lambda () #f)))
+  (define (cancel-button-clicked)
+    (unless (null? cancel-button-callback) (cancel-button-callback))
+    (send dialog show #f))
+
+  (define (ok-button-clicked)
+    (define selected-platform-name (send platforms get-string-selection)) 
+    (define selected-platform-id (code-description-row-id (parse-platform (get-platform-by-name selected-platform-name))))
+
+    (define selected-genre-name (send genres get-string-selection)) 
+    (define selected-genre-id (code-description-row-id (parse-genre (get-genre-by-name selected-genre-name))))
+
+    (define save-game (game [send game-id get-value]
+			    [send title get-value]
+			    selected-genre-id
+			    selected-platform-id
+			    [send number-owned get-value]
+			    [send number-boxed get-value]
+			    [send number-manuals get-value]
+			    [game-date-purchased the-game]
+			    [game-approximate-purchase-date the-game]
+			    [game-notes the-game])) 
+
+    (update-game save-game)
+    (unless (null? ok-button-callback) (ok-button-callback))
+    (send dialog show #f))
+
+  (define cancel-button (button-maker "&Cancel" cancel-button-clicked))
+
+  (define ok-button (button-maker "&OK" ok-button-clicked)) 
 
   (send dialog show #t))

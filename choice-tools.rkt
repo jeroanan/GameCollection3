@@ -14,5 +14,3 @@
 (define (set-choice-selection choice-widget selected-text) 
   (define selected-index (send choice-widget find-string selected-text)) 
   (unless (eq? selected-index #f) (send choice-widget set-selection selected-index)))
-
-
