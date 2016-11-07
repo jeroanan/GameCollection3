@@ -91,9 +91,9 @@
 			     frame 
 			     window-width 
 			     [from-game game-title]
-			     list-box-click
-			     list-box-col-heading-click
-			     list-box-dclick))
+			     #:click-callback list-box-click
+			     #:col-heading-callback list-box-col-heading-click
+			     #:double-click-callback list-box-dclick))
 
 	(define (populate-games-list)
 	  (set! games (parse-games (get-games sort-col sort-dir)))

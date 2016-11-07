@@ -35,7 +35,6 @@
     (define (set-col idx data) (set-list-column-items genre-list idx data))
     (for ([_ genre-names]) (send genre-list append ""))
     (set-col 0 genre-names))
-
  
   (define genre-list (new-list-box dialog
 				      window-width

@@ -56,10 +56,12 @@
       	(col-heading-callback (send control-event get-column))]
       [(call-event? 'list-box-dclick double-click-callback) (double-click-callback)])))
 
-(define (new-list-box parent min-width choices 
-		      [click-callback null] 
-		      [col-heading-callback null]
-		      [double-click-callback null]
+(define (new-list-box parent 
+		      min-width 
+		      choices 
+		      #:click-callback [click-callback null] 
+		      #:col-heading-callback [col-heading-callback null]
+		      #:double-click-callback [double-click-callback null]
 		      #:min-height [min-height null])
   (new list-box%
        [parent parent]
