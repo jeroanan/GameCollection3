@@ -6,7 +6,8 @@
 	 "parse.rkt"
 	 "queries.rkt"
 	 "button-tools.rkt"
-	 "list-tools.rkt")
+	 "list-tools.rkt"
+	 "add-code-description-dialog.rkt")
 	
 (provide show-platforms-dialog)
 
@@ -59,6 +60,14 @@
 		      [alignment (list 'right 'center)]))
   
   (define button-maker (get-simple-button-maker hpanel))
+  
+  (define (new-button-clicked)
+    (define (ok-button-callback)
+      (populate-platform-list))
+
+    (show-add-code-description-dialog dialog 'platform #:ok-button-callback ok-button-callback))
+	
+  (define new-button (button-maker "&New" new-button-clicked))
   (define close-button (button-maker "&Close" (lambda () (send dialog show #f))))
 
   (send dialog show #t))

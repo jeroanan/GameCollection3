@@ -8,9 +8,11 @@
 	get-platforms
 	get-platform-by-id
 	get-platform-by-name
+	add-platform
 	get-genres
 	get-genre-by-id
 	get-genre-by-name
+	add-genre
 	get-hardware-types
 	get-hardware
 	update-game)
@@ -71,6 +73,12 @@
 (define (get-platform-by-name name)
   (get-row-by-id "SELECT RowId, * FROM Platform WHERE Name=$1 LIMIT 1;" name))
 
+(define (add-platform platform)
+  (define sql "INSERT INTO Platform (Name, Description) VALUES($1, $2);")
+  (define params (list (code-description-code platform)
+		       (code-description-description platform)))
+  (exec sql params))
+
 (define (get-genres [sort-dir "ASC"])
   (get-rows (string-append "SELECT RowId, * From Genre ORDER BY Name " sort-dir ";")))
  
@@ -79,6 +87,12 @@
 
 (define (get-genre-by-name name)
   (get-row-by-id "SELECT RowId, * FROM Genre WHERE Name=$1 LIMIT 1;" name))
+
+(define (add-genre genre)
+  (define sql ("INSERT INTO Genre (Name, Description) VALUES($1, $2);"))
+  (define params (list (code-description-code genre)
+		       (code-description-description genre)))
+  (exec sql params))
 
 (define (get-hardware-types)
 	(get-rows "SELECT RowId, * FROM HardwareType;"))

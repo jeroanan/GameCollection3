@@ -11,7 +11,8 @@
 	parse-hardware-type
 	parse-hardware-types
 	parse-hardware
-	parse-hardwares)
+	parse-hardwares
+	parse-code-description)
 
 (define (vr the-vector ref-index)
 	(vector-ref the-vector ref-index))
