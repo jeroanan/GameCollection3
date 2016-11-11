@@ -7,6 +7,7 @@
 	 "queries.rkt"
 	 "button-tools.rkt"
 	 "list-tools.rkt"
+	 "confirmation-box.rkt"
 	 "add-code-description-dialog.rkt")
 	
 (provide show-platforms-dialog)
@@ -56,18 +57,31 @@
   (populate-platform-list)
 
   (define hpanel (new horizontal-panel%
-		      [parent dialog]
+		      [parent dialog]))
+  
+  (define lpanel (new horizontal-panel%
+		      [parent hpanel]
+		      [alignment (list 'left 'center)]))
+  
+  (define rpanel (new horizontal-panel%
+		      [parent hpanel]
 		      [alignment (list 'right 'center)]))
   
-  (define button-maker (get-simple-button-maker hpanel))
+  (define rpanel-button-maker (get-simple-button-maker rpanel))
+  (define lpanel-button-maker (get-simple-button-maker lpanel))
   
+  (define (delete-button-clicked)
+    (make-confirmation-box dialog "Are you sure you want to delete this platform?" "Confirm Platform Deletion"))
+
+  (define delete-button (lpanel-button-maker "&Delete" delete-button-clicked))
+
   (define (new-button-clicked)
     (define (ok-button-callback)
       (populate-platform-list))
 
     (show-add-code-description-dialog dialog 'platform #:ok-button-callback ok-button-callback))
 	
-  (define new-button (button-maker "&New" new-button-clicked))
-  (define close-button (button-maker "&Close" (lambda () (send dialog show #f))))
+  (define new-button (rpanel-button-maker "&New" new-button-clicked))
+  (define close-button (rpanel-button-maker "&Close" (lambda () (send dialog show #f))))
 
   (send dialog show #t))
