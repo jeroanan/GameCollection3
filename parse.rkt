@@ -12,7 +12,8 @@
 	parse-hardware-types
 	parse-hardware
 	parse-hardwares
-	parse-code-description)
+	parse-code-description
+	parse-code-descriptions)
 
 (define (vr the-vector ref-index)
 	(vector-ref the-vector ref-index))
@@ -22,6 +23,9 @@
 		(vr result-set 0)
 		(vr result-set 1)
 		(vr result-set 2)))
+
+(define (parse-code-descriptions result-set)
+  (map parse-code-description result-set))
 
 (define (parse-game result-set)
 	(game 

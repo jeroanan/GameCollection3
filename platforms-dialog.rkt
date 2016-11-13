@@ -8,6 +8,7 @@
 	 "button-tools.rkt"
 	 "list-tools.rkt"
 	 "confirmation-box.rkt"
+	 "caution-box.rkt"
 	 "add-code-description-dialog.rkt")
 	
 (provide show-platforms-dialog)
@@ -40,7 +41,8 @@
 
     (define (set-col idx data) (set-list-column-items platform-list idx data))
     (for ([_ platform-names]) (send platform-list append ""))
-    (set-col 0 platform-names))
+    (set-col 0 platform-names)
+    (set-listbox-data platform-list platforms))
 
   (define (col-heading-click col-index)
     (set! sort-direction (if (eq? sort-direction "ASC") "DESC" "ASC"))
@@ -71,7 +73,21 @@
   (define lpanel-button-maker (get-simple-button-maker lpanel))
   
   (define (delete-button-clicked)
-    (make-confirmation-box dialog "Are you sure you want to delete this platform?" "Confirm Platform Deletion"))
+    (define (yes-button-callback)
+      (define selected-item (get-listbox-selected-data platform-list)) 
+      (when (code-description? selected-item)
+	(begin
+	  (define selected-id (number->string (code-description-row-id selected-item)))
+	  (define item-game (parse-code-descriptions (get-games-by-platform selected-id)))
+	  (if (eq? 0 (length item-game))
+		   (delete-platform selected-item)
+		   (make-caution-box dialog "This platform has associated games; reassign them before deleting it"))))
+      (populate-platform-list))
+
+    (make-confirmation-box dialog 
+			   "Are you sure you want to delete this platform?" 
+			   "Confirm Platform Deletion"
+			   #:yes-button-callback yes-button-callback))
 
   (define delete-button (lpanel-button-maker "&Delete" delete-button-clicked))
 

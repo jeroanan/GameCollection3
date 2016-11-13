@@ -5,10 +5,12 @@
 (require "structs.rkt")
 
 (provide get-games
+	 get-games-by-platform
 	get-platforms
 	get-platform-by-id
 	get-platform-by-name
 	add-platform
+	delete-platform
 	get-genres
 	get-genre-by-id
 	get-genre-by-name
@@ -39,13 +41,17 @@
  (define stmt (bind-prepared-statement (prepare conn sql) params))
  (query-exec conn stmt))
  
-(define (get-games [sort-by "title"] [sort-dir "ASC"]) 
+(define (get-games [sort-by "title"] [sort-dir "ASC"] #:where-statement [where-statement ""]) 
   (get-rows (string-append "SELECT g.RowId, g.Title, g.Genre, g.Platform, g.NumberOwned, " 
 			   "g.NumberBoxed, g.NumberOfManuals, g.DatePurchased, " 
 			   "g.ApproximatePurchaseDate, g.Notes, p.Name as PlatformName " 
 			   "FROM Game as g "
 			   "JOIN Platform AS p ON g.Platform=p.RowId "
+			   where-statement
 			   "ORDER BY " sort-by " " sort-dir ";")))
+
+(define (get-games-by-platform platform-id)
+  (get-games #:where-statement (string-append "WHERE Platform=" platform-id " ")))
 
 (define (update-game game)
   (define sql (string-append "UPDATE GAME SET Title=$1, Genre=$2, Platform=$3, NumberOwned=$4, " 
@@ -77,6 +83,11 @@
   (define sql "INSERT INTO Platform (Name, Description) VALUES($1, $2);")
   (define params (list (code-description-code platform)
 		       (code-description-description platform)))
+  (exec sql params))
+
+(define (delete-platform platform)
+  (define sql "DELETE FROM Platform WHERE RowId=$1;")
+  (define params (list (code-description-row-id platform)))
   (exec sql params))
 
 (define (get-genres [sort-dir "ASC"])
