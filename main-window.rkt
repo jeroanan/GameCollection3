@@ -7,8 +7,7 @@
 	 "structs.rkt"
 	 "list-tools.rkt"
 	 "game-details-dialog.rkt"
-	 "platforms-dialog.rkt"
-	 "genres-dialog.rkt")
+	 "code-description-list-dialog.rkt")
 
 (define window-height 300)
 (define window-width 1000)
@@ -49,9 +48,9 @@
 		  
 	(define collection-menu-item-maker (menu-item-maker collection-menu))
 
-	(define (cmwe caption f) (collection-menu-item-maker caption (lambda (x y) (f frame))))
-	(define platforms-menu-item (cmwe "&Platforms" show-platforms-dialog))
-	(define genres-menu-item (cmwe "&Genres" show-genres-dialog))
+	(define (cmwe caption f t) (collection-menu-item-maker caption (lambda (x y) (f frame t))))
+	(define platforms-menu-item (cmwe "&Platforms" show-code-description-list-dialog 'platform))
+	(define genres-menu-item (cmwe "&Genres" show-code-description-list-dialog 'genre))
 
 	(define games (parse-games (get-games)))
 	(define platforms (parse-platforms (get-platforms)))

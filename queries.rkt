@@ -6,6 +6,7 @@
 
 (provide get-games
 	 get-games-by-platform
+	 get-games-by-genre
 	get-platforms
 	get-platform-by-id
 	get-platform-by-name
@@ -15,6 +16,7 @@
 	get-genre-by-id
 	get-genre-by-name
 	add-genre
+	delete-genre
 	get-hardware-types
 	get-hardware
 	update-game)
@@ -52,6 +54,9 @@
 
 (define (get-games-by-platform platform-id)
   (get-games #:where-statement (string-append "WHERE Platform=" platform-id " ")))
+
+(define (get-games-by-genre genre-id)
+  (get-games #:where-statement (string-append "WHERE Genre=" genre-id " ")))
 
 (define (update-game game)
   (define sql (string-append "UPDATE GAME SET Title=$1, Genre=$2, Platform=$3, NumberOwned=$4, " 
@@ -103,6 +108,11 @@
   (define sql ("INSERT INTO Genre (Name, Description) VALUES($1, $2);"))
   (define params (list (code-description-code genre)
 		       (code-description-description genre)))
+  (exec sql params))
+
+(define (delete-genre genre)
+  (define sql "DELETE FROM Genre WHERE RowId=$1;")
+  (define params (list (code-description-row-id genre)))
   (exec sql params))
 
 (define (get-hardware-types)
