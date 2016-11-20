@@ -67,8 +67,7 @@
 	      (make-confirmation-box frame 
 				     deletion-confirmation-message
 				     "Confirm deletion"
-				     #:yes-button-callback yes-button-callback)))
-	  #f)
+				     #:yes-button-callback yes-button-callback))))
 
 	(define game-details-menu-item (game-menu-item-maker "&Details" (lambda (x y) (show-details))))
 	(define delete-game-menuitem (game-menu-item-maker "De&lete" delete-game-clicked))
