@@ -9,6 +9,8 @@
 	 "game-details-dialog.rkt"
 	 "code-description-list-dialog.rkt")
 
+(provide launch-gui)
+
 (define window-height 300)
 (define window-width 1000)
 
@@ -32,14 +34,21 @@
 		 [label label]
 		 [callback the-callback])))
 
+	(define (show-details)
+	  (define selected-game (get-listbox-selected-data games-list))
+	  (unless (boolean? selected-game) (show-game-details-dialog frame selected-game #:ok-button-callback populate-games-list)))
+
 	(define game-menu (new menu%
 			       [parent menu-bar]
 			       [label "&Game"]))
 
 	(define game-menu-item-maker (menu-item-maker game-menu))
 
-	(define new-game-menu-item (game-menu-item-maker "&New"))
-	(define game-details-menu-item (game-menu-item-maker "&Details"))
+	(define (show-new-game x y)
+	  (show-game-details-dialog frame #:ok-button-callback populate-games-list))
+
+	(define new-game-menu-item (game-menu-item-maker "&New" show-new-game))
+	(define game-details-menu-item (game-menu-item-maker "&Details" (lambda (x y) (show-details))))
 	(define quit-menu-item (game-menu-item-maker "&Quit" (lambda (x y) (exit)))) 
 
 	(define collection-menu (new menu%
@@ -60,14 +69,6 @@
 
 	(define (from-game field-func)
 	  (map (lambda (x) (field-func x)) games))
-
-	(define (list-box-click)
-	  #f)
-
-	(define (list-box-dclick)
-	  (define selection (first (send games-list get-selections)))
-	  (define selected-game (send games-list get-data selection))
-	  (show-game-details-dialog frame selected-game #:ok-button-callback populate-games-list))
 	
 	(define (list-box-col-heading-click col-index)
 	  (define new-sort-col
@@ -90,9 +91,8 @@
 			     frame 
 			     window-width 
 			     [from-game game-title]
-			     #:click-callback list-box-click
 			     #:col-heading-callback list-box-col-heading-click
-			     #:double-click-callback list-box-dclick))
+			     #:double-click-callback show-details))
 
 	(define (populate-games-list)
 	  (set! games (parse-games (get-games sort-col sort-dir)))
@@ -107,6 +107,9 @@
 			      platforms)))) 
 		 games))
 	  
+          (send games-list clear) 
+          (for ([_ games]) (send games-list append ""))
+
 	  (set-list-column-items games-list 0 (from-game game-title))
 	  (set-list-column-items games-list 1 game-platforms)
 	  (set-listbox-data games-list games))

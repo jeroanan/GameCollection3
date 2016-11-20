@@ -19,6 +19,7 @@
 	delete-genre
 	get-hardware-types
 	get-hardware
+	create-game
 	update-game)
 
 (define (get-connection)
@@ -73,6 +74,22 @@
 		       (game-approximate-purchase-date game)
 		       (game-notes game)
 		       (game-row-id game)))
+  (exec sql params))
+
+(define (create-game game)
+  (define sql (string-append "INSERT INTO GAME (Title, Genre, Platform, NumberOwned, NumberBoxed, NumberOfManuals, "
+			                       "DatePurchased, ApproximatePurchaseDate, Notes) "
+                             "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"))
+  
+  (define params (list (game-title game)
+		       (game-genre game)
+		       (game-platform game)
+		       (game-number-owned game)
+		       (game-number-boxed game)
+		       (game-number-of-manuals game)
+		       (game-date-purchased game)
+		       (game-approximate-purchase-date game)
+		       (game-notes game)))
   (exec sql params))
 
 (define (get-platforms [sort-dir "ASC"]) 
