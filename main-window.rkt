@@ -7,6 +7,7 @@
 	 "structs.rkt"
 	 "list-tools.rkt"
 	 "game-details-dialog.rkt"
+	 "confirmation-box.rkt"
 	 "code-description-list-dialog.rkt")
 
 (provide launch-gui)
@@ -34,8 +35,11 @@
 		 [label label]
 		 [callback the-callback])))
 
+	(define (get-selected-game)
+	  (get-listbox-selected-data games-list))
+
 	(define (show-details)
-	  (define selected-game (get-listbox-selected-data games-list))
+	  (define selected-game get-selected-game)
 	  (unless (boolean? selected-game) (show-game-details-dialog frame selected-game #:ok-button-callback populate-games-list)))
 
 	(define game-menu (new menu%
@@ -48,7 +52,26 @@
 	  (show-game-details-dialog frame #:ok-button-callback populate-games-list))
 
 	(define new-game-menu-item (game-menu-item-maker "&New" show-new-game))
+
+	(define (delete-game-clicked x y)
+	  (define selected-game (get-selected-game))
+	  (unless (boolean? selected-game)
+	    (begin 
+
+	      (define (yes-button-callback)
+		(delete-game selected-game)
+		(populate-games-list))
+
+	      (define deletion-confirmation-message (string-append
+						      "Are you sure you want to delete " (game-title selected-game) "?"))
+	      (make-confirmation-box frame 
+				     deletion-confirmation-message
+				     "Confirm deletion"
+				     #:yes-button-callback yes-button-callback)))
+	  #f)
+
 	(define game-details-menu-item (game-menu-item-maker "&Details" (lambda (x y) (show-details))))
+	(define delete-game-menuitem (game-menu-item-maker "De&lete" delete-game-clicked))
 	(define quit-menu-item (game-menu-item-maker "&Quit" (lambda (x y) (exit)))) 
 
 	(define collection-menu (new menu%

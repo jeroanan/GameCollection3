@@ -20,7 +20,8 @@
 	get-hardware-types
 	get-hardware
 	create-game
-	update-game)
+	update-game
+	delete-game)
 
 (define (get-connection)
  (sqlite3-connect #:database "GameCollection.db")) 
@@ -90,6 +91,11 @@
 		       (game-date-purchased game)
 		       (game-approximate-purchase-date game)
 		       (game-notes game)))
+  (exec sql params))
+
+(define (delete-game game)
+  (define sql (string-append "DELETE FROM Game WHERE RowId=$1"))
+  (define params (list (game-row-id game)))
   (exec sql params))
 
 (define (get-platforms [sort-dir "ASC"]) 
