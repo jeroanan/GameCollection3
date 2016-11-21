@@ -6,9 +6,11 @@
 	 "../parse.rkt" 
 	 "../structs.rkt")
 
-(define (all-games-report [file-name null])
+(provide all-games-report)
+
+(define (all-games-report file-name [platform-id null])
   (define report-title "All Games")
-  (define all-games (parse-games (get-games)))
+  (define all-games (parse-games (if (null? platform-id) (get-games) (get-games-by-platform (number->string platform-id)))))
   (define all-platforms (parse-code-descriptions (get-platforms)))
 
   (define (parse-game game)
@@ -37,9 +39,6 @@
 			 ,@(map parse-game all-games))))))))
 
   (define xml-str (xexpr->string xml))
-
-  (print xml-str)
-  (newline) 
 
   (unless (null? file-name) 
     (begin

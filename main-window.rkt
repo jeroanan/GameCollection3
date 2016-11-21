@@ -1,6 +1,7 @@
 #lang racket
 
 (require racket/gui/base)
+(require framework)
 
 (require "queries.rkt"
 	 "parse.rkt"
@@ -8,7 +9,9 @@
 	 "list-tools.rkt"
 	 "game-details-dialog.rkt"
 	 "confirmation-box.rkt"
-	 "code-description-list-dialog.rkt")
+	 "code-description-list-dialog.rkt"
+	 "platform-selection-dialog.rkt"
+	 "reports/all-games.rkt")
 
 (provide launch-gui)
 
@@ -83,6 +86,29 @@
 	(define platforms-menu-item (cmwe "&Platforms" show-code-description-list-dialog 'platform))
 	(define genres-menu-item (cmwe "&Genres" show-code-description-list-dialog 'genre))
 
+	(define reports-menu (new menu%
+				  [parent menu-bar]
+				  [label "&Reports"]))
+
+	(define reports-menu-item-maker (menu-item-maker reports-menu))
+
+	(define (all-games-report-clicked x y)
+	  (define selected-file (finder:put-file))
+	  (unless (false? selected-file)
+	    (all-games-report selected-file)))
+
+	(define all-games-report-menu-item (reports-menu-item-maker "All Games..." all-games-report-clicked))
+
+	(define (games-for-platform-report-clicked x y)
+	  (define (ok-button-callback platform-id)
+	    (define selected-file (finder:put-file))
+	    (unless (false? selected-file)
+	      (all-games-report selected-file platform-id)))
+
+	  (show-platform-selection-dialog frame #:ok-button-callback ok-button-callback))
+
+	(define games-for-platform-report-menu-item (reports-menu-item-maker "Games for Platform..." games-for-platform-report-clicked))
+
 	(define games (parse-games (get-games)))
 	(define platforms (parse-platforms (get-platforms)))
 
@@ -146,4 +172,3 @@
 	(populate-games-list)
 	(send frame show #t))
 
-(launch-gui)
