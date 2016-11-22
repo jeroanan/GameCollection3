@@ -1,12 +1,12 @@
 #lang racket
 
-(require racket/gui/base)
+(require racket/gui/base
+	 framework/gui-utils)
 
 (require "structs.rkt"
 	 "parse.rkt"
 	 "queries.rkt"
-	 "choice-tools.rkt"
-	 "button-tools.rkt")
+	 "choice-tools.rkt")
 
 (provide show-platform-selection-dialog)
 
@@ -32,15 +32,11 @@
 		     [parent dialog]
 		     [alignment (list 'right 'center)]))
   
-  (define button-maker (get-simple-button-maker hpane))
-
-  (define (cancel-button-clicked)
+  (define (cancel-button-clicked source event)
     (unless (null? cancel-button-callback) (cancel-button-callback))
     (send dialog show #f))
 
-  (define cancel-button (button-maker "&Cancel" cancel-button-clicked))
-
-  (define (ok-button-clicked)
+  (define (ok-button-clicked source event)
     (unless (null? ok-button-callback) 
       (begin
 	(define selected-platform-name (send platform-choice get-string-selection))
@@ -48,6 +44,6 @@
 	(ok-button-callback selected-platform-id)))
     (send dialog show #f))
 
-  (define ok-button (button-maker "&OK" ok-button-clicked)) 
+  (gui-utils:ok/cancel-buttons hpane ok-button-clicked cancel-button-clicked)
 
   (send dialog show #t))

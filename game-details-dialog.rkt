@@ -1,11 +1,11 @@
 #lang racket
 
-(require racket/gui/base)
+(require racket/gui/base
+	 framework/gui-utils)
 
 (require "structs.rkt"
 	 "parse.rkt"
 	 "queries.rkt"
-	 "button-tools.rkt"
 	 "choice-tools.rkt"
 	 "text-field-tools.rkt")
 
@@ -60,13 +60,11 @@
 		      [parent dialog]
 		      [alignment (list 'right 'center)]))
 
-  (define button-maker (get-simple-button-maker hpanel))
-
-  (define (cancel-button-clicked)
+  (define (cancel-button-clicked source event)
     (unless (null? cancel-button-callback) (cancel-button-callback))
     (send dialog show #f))
 
-  (define (ok-button-clicked)
+  (define (ok-button-clicked source event)
     (define selected-platform-name (send platforms get-string-selection)) 
     (define selected-platform-id (code-description-row-id (parse-platform (get-platform-by-name selected-platform-name))))
 
@@ -89,9 +87,7 @@
     (unless (null? ok-button-callback) (ok-button-callback))
     (send dialog show #f))
 
-  (define cancel-button (button-maker "&Cancel" cancel-button-clicked))
-
-  (define ok-button (button-maker "&OK" ok-button-clicked)) 
+  (gui-utils:ok/cancel-buttons hpanel ok-button-clicked cancel-button-clicked)
 
   (when (null? the-game) (send game-id show #f))
   (send dialog show #t))
