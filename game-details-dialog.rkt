@@ -46,15 +46,24 @@
 
   (define title (new-text-field dialog "Title" (game-attr game-title)))
 
-  (define genres (new-choice dialog "Genre" genre-codes))
+  (define dropdowns-hpanel (new horizontal-panel%
+				[parent dialog]
+				[vert-margin 10]))
+
+  (define genres (new-choice dropdowns-hpanel "Genre" genre-codes))
   (set-choice-selection genres (code-description-code the-genre))
 
-  (define platforms (new-choice dialog "Platform" platform-codes))
+  (define platforms (new-choice dropdowns-hpanel "Platform" platform-codes))
   (set-choice-selection platforms (code-description-code the-platform))
 
-  (define number-owned (number-field dialog "Number Owned" (game-attr game-number-owned)))
-  (define number-boxed (number-field dialog "Number Boxed" (game-attr game-number-boxed)))
-  (define number-manuals (number-field dialog "Number of Manuals" (game-attr game-number-of-manuals)))
+
+  (define quantities-hpanel (new horizontal-panel%
+				 [parent dialog]
+				 [vert-margin 10]))
+				 
+  (define number-owned (number-field quantities-hpanel "Owned" (game-attr game-number-owned)))
+  (define number-boxed (number-field quantities-hpanel "Boxed" (game-attr game-number-boxed)))
+  (define number-manuals (number-field quantities-hpanel "Manuals" (game-attr game-number-of-manuals)))
 
   (define hpanel (new horizontal-panel%
 		      [parent dialog]

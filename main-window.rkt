@@ -42,7 +42,7 @@
 	  (get-listbox-selected-data games-list))
 
 	(define (show-details)
-	  (define selected-game get-selected-game)
+	  (define selected-game (get-selected-game))
 	  (unless (boolean? selected-game) (show-game-details-dialog frame selected-game #:ok-button-callback populate-games-list)))
 
 	(define game-menu (new menu%

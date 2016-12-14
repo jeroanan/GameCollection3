@@ -15,6 +15,8 @@
        [parent parent]
        [enabled enabled]
        [init-value init-value]
+       [vert-margin 5]
+       [horiz-margin 10]
        [callback (make-text-field-callback (if (null? on-text-change) (lambda () #f) on-text-change))]))
 
 (define (number-field parent label text)
